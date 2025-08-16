@@ -34,13 +34,22 @@ y_test_tensor = torch.tensor(y, dtype=torch.long)
 
 # ==== Model Run ====
 
+
 model = HybridModel(
     input_channels=19,
-    cnn_channels=64,
-    lstm_hidden=128,
-    lstm_layers=3,
+    cnn_channels=32,
+    lstm_hidden=32,
+    lstm_layers=2,
     num_classes=4
-)# pass the best parameters from optuna used in train
+)
+
+# model = HybridModel(
+#     input_channels=19,
+#     cnn_channels=64,
+#     lstm_hidden=128,
+#     lstm_layers=3,
+#     num_classes=4
+# )# pass the best parameters from optuna used in train
 
 
 # Load the saved state_dict

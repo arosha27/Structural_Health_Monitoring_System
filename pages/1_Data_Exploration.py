@@ -109,43 +109,43 @@ with tab3:
                             marker=dict(color="red", size=8, symbol="x"))
         st.plotly_chart(fig, use_container_width=True)
 
-        # -------------------------
-        # Condition Progression
-        # -------------------------
-        if "structural_condition" in df.columns:
-            st.subheader("Structural Condition Progression Over Time")
+        # # -------------------------
+        # # Condition Progression
+        # # -------------------------
+        # if "structural_condition" in df.columns:
+        #     st.subheader("Structural Condition Progression Over Time")
 
-            condition_order = ["No damage", "Minor", "Moderate", "Severe"]
-            df_sorted["structural_condition"] = df_sorted["structural_condition"].astype(str).str.strip().str.title()
+        #     condition_order = ["No damage", "Minor", "Moderate", "Severe"]
+        #     df_sorted["structural_condition"] = df_sorted["structural_condition"].astype(str).str.strip().str.title()
 
-            df_sorted["condition_numeric"] = df_sorted["structural_condition"].apply(
-                lambda x: condition_order.index(x) if x in condition_order else np.nan
-            )
+        #     df_sorted["condition_numeric"] = df_sorted["structural_condition"].apply(
+        #         lambda x: condition_order.index(x) if x in condition_order else np.nan
+        #     )
 
-            df_condition = df_sorted.dropna(subset=["condition_numeric"])
+        #     df_condition = df_sorted.dropna(subset=["condition_numeric"])
 
-            if df_condition.empty:
-                st.warning("No valid structural condition values found in the data.")
-            else:
-                cond_fig = px.line(
-                    df_condition,
-                    x=datetime_col,
-                    y="condition_numeric",
-                    markers=True,
-                    title="Condition State Progression",
-                    color="structural_condition",
-                    color_discrete_map={
-                        "No damage": "green",
-                        "Minor": "yellow",
-                        "Moderate": "orange",
-                        "Severe": "red"
-                    }
-                )
-                cond_fig.update_yaxes(
-                    tickvals=list(range(len(condition_order))),
-                    ticktext=condition_order
-                )
-                st.plotly_chart(cond_fig, use_container_width=True)
+        #     if df_condition.empty:
+        #         st.warning("No valid structural condition values found in the data.")
+        #     else:
+        #         cond_fig = px.line(
+        #             df_condition,
+        #             x=datetime_col,
+        #             y="condition_numeric",
+        #             markers=True,
+        #             title="Condition State Progression",
+        #             color="structural_condition",
+        #             color_discrete_map={
+        #                 "No damage": "green",
+        #                 "Minor": "yellow",
+        #                 "Moderate": "orange",
+        #                 "Severe": "red"
+        #             }
+        #         )
+        #         cond_fig.update_yaxes(
+        #             tickvals=list(range(len(condition_order))),
+        #             ticktext=condition_order
+        #         )
+        #         st.plotly_chart(cond_fig, use_container_width=True)
 
 # -------------------------
 # TAB 4 - Feature Correlation
@@ -182,8 +182,8 @@ with tab5:
                      color_discrete_sequence=px.colors.qualitative.Vivid)
         st.plotly_chart(fig, use_container_width=True)
 
-    st.subheader("Target Relationship")
-    target_for_relation = st.selectbox("Select target variable", [c for c in categorical_cols if c != datetime_col])
-    if selected_cat != target_for_relation:
-        fig = px.histogram(df, x=selected_cat, color=target_for_relation, barmode="group")
-        st.plotly_chart(fig, use_container_width=True)
+    # st.subheader("Target Relationship")
+    # target_for_relation = st.selectbox("Select target variable", [c for c in categorical_cols if c != datetime_col])
+    # if selected_cat != target_for_relation:
+    #     fig = px.histogram(df, x=selected_cat, color=target_for_relation, barmode="group")
+    #     st.plotly_chart(fig, use_container_width=True)
