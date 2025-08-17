@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 # Page Config
 # -------------------------
 st.set_page_config(page_title="SHM Data Exploration", layout="wide")
-st.markdown("<h1 style='text-align:center;'>📊 Structural Health Monitoring Dashboard</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align:center;'> Structural Health Monitoring Dashboard</h1>", unsafe_allow_html=True)
 
 # -------------------------
 # Load Dataset
@@ -38,18 +38,18 @@ categorical_cols = df.select_dtypes(exclude=[np.number]).columns.tolist()
 # -------------------------
 # Sidebar Navigation
 # -------------------------
-st.sidebar.title("🔍 Navigation")
+st.sidebar.title(" Navigation")
 page = st.sidebar.radio(
     "Go to",
-    ["📄 Dataset Overview",
-     "📌 Condition Distribution",
-     "📈 Time Series Trends",
-     "📊 Feature Correlation",
-     "🔍 Categorical Feature Analysis"]
+    [" Dataset Overview",
+     " Condition Distribution",
+     " Time Series Trends",
+     " Feature Correlation",
+     " Categorical Feature Analysis"]
 )
 
 # Sidebar Filters
-st.sidebar.markdown("### 📅 Date Range Filter")
+st.sidebar.markdown("###  Date Range Filter")
 if datetime_col:
     min_date, max_date = df[datetime_col].min(), df[datetime_col].max()
     date_range = st.sidebar.date_input("Select Date Range", [min_date, max_date])
@@ -57,14 +57,14 @@ if datetime_col:
         df = df[(df[datetime_col] >= pd.to_datetime(date_range[0])) &
                 (df[datetime_col] <= pd.to_datetime(date_range[1]))]
 
-st.sidebar.markdown("### ⚙️ Advanced Settings")
+st.sidebar.markdown("###  Advanced Settings")
 show_rolling = st.sidebar.checkbox("Enable Rolling Average", value=True)
 rolling_window = st.sidebar.slider("Rolling Window Size", 1, 48, 24)
 
 # -------------------------
 # Page Logic
 # -------------------------
-if page == "📄 Dataset Overview":
+if page == " Dataset Overview":
     st.subheader("Dataset Snapshot")
     st.dataframe(df.head(10), use_container_width=True)
     st.write(f"**Shape:** {df.shape}")
@@ -72,7 +72,7 @@ if page == "📄 Dataset Overview":
     st.subheader("Basic Statistics")
     st.dataframe(df[numeric_cols].describe())
 
-elif page == "📌 Condition Distribution":
+elif page == " Condition Distribution":
     target_col = st.selectbox("Select target column", [c for c in categorical_cols if c != datetime_col])
     col1, col2 = st.columns(2)
     with col1:
@@ -87,7 +87,7 @@ elif page == "📌 Condition Distribution":
                      color_discrete_sequence=px.colors.qualitative.Set2)
         st.plotly_chart(fig, use_container_width=True)
 
-elif page == "📈 Time Series Trends":
+elif page == " Time Series Trends":
     if datetime_col is None:
         st.warning("No datetime column detected.")
     else:
@@ -113,7 +113,7 @@ elif page == "📈 Time Series Trends":
                             marker=dict(color="red", size=8, symbol="x"))
         st.plotly_chart(fig, use_container_width=True)
 
-elif page == "📊 Feature Correlation":
+elif page == " Feature Correlation":
     st.subheader("Correlation Heatmap")
     selected_cols = st.multiselect("Select numeric columns", numeric_cols, default=numeric_cols[:5])
     if len(selected_cols) >= 2:
@@ -122,7 +122,7 @@ elif page == "📊 Feature Correlation":
         sns.heatmap(corr, annot=True, cmap="coolwarm", ax=ax)
         st.pyplot(fig)
 
-elif page == "🔍 Categorical Feature Analysis":
+elif page == " Categorical Feature Analysis":
     selected_cat = st.selectbox("Select categorical feature", [c for c in categorical_cols if c != datetime_col])
     target_for_relation = st.selectbox("Select target variable", [c for c in categorical_cols if c != datetime_col])
 

@@ -2,9 +2,9 @@ import streamlit as st
 import torch
 import numpy as np
 import pandas as pd
-import plotly.graph_objects as go
 import os
 import sys
+import plotly.graph_objects as go
 
 # ==== Path setup ====
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -13,11 +13,11 @@ sys.path.append(project_root)
 
 from Models.models import HybridModel  # your model
 
-st.header("🔮 Interactive Prediction with Time Series Insights")
+st.header("Interactive Prediction with Time Series Insights")
 
 # ==== Load feature info ====
 df = pd.read_csv("Data/Processed/featured_dataset_V2.csv")
-df = df.drop(["structural_condition"] , axis=1)
+df = df.drop(["structural_condition"], axis=1)
 feature_ranges = {}
 for col in df.columns:
     if np.issubdtype(df[col].dtype, np.number):
@@ -83,15 +83,24 @@ if st.button("Predict Condition"):
         ignore_index=True
     )
 
-# ==== Time-series style plot ====
-import matplotlib.pyplot as plt
-import plotly.graph_objects as go
+# ==== Display all predictions in tabular format ====
+st.subheader("Prediction History Table")
+st.dataframe(st.session_state.prediction_history)
 
+# ==== Download button ====
 if not st.session_state.prediction_history.empty:
-    st.subheader("📈 Time-Series with Predictions")
+    csv = st.session_state.prediction_history.to_csv(index=False)
+    st.download_button(
+        label="Download Prediction History as CSV",
+        data=csv,
+        file_name="prediction_history.csv",
+        mime="text/csv"
+    )
 
+# ==== Time-series style plot ====
+if not st.session_state.prediction_history.empty:
+    st.subheader("Time-Series with Predictions")
     hist_df = st.session_state.prediction_history.reset_index().rename(columns={"index": "Step"})
-
     fig = go.Figure()
 
     # Add feature lines
@@ -129,3 +138,5 @@ if not st.session_state.prediction_history.empty:
     )
 
     st.plotly_chart(fig, use_container_width=True)
+
+

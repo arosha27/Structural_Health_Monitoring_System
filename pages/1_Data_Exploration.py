@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 # Streamlit Page Settings
 # -------------------------
 st.set_page_config(page_title="SHM Data Exploration", layout="wide")
-st.title("📊 Structural Health Monitoring - Data Exploration")
+st.title(" Structural Health Monitoring - Data Exploration")
 
 # -------------------------
 # Load Data
@@ -35,11 +35,11 @@ categorical_cols = df.select_dtypes(exclude=[np.number]).columns.tolist()
 # TABS
 # -------------------------
 tab1, tab2, tab3, tab4, tab5 = st.tabs([
-    "📄 Dataset Overview",
-    "📌 Condition Distribution",
-    "📈 Time Series Trends",
-    "📊 Feature Correlation",
-    "🔍 Categorical Feature Analysis"
+    " Dataset Overview",
+    " Condition Distribution",
+    " Time Series Trends",
+    " Feature Correlation",
+    " Categorical Feature Analysis"
 ])
 
 # -------------------------
