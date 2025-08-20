@@ -19,30 +19,20 @@ def to_numpy_if_df(x):
 
 def prepare_X_as_3d(X):
     X = to_numpy_if_df(X)
-    if X.ndim == 1:
+    if X.ndim == 1:   # (n,) → (n,1,1)
         X = X.reshape(-1, 1, 1)
-    elif X.ndim == 2:
+    elif X.ndim == 2: # (n,features) → (n,1,features)
         X = X.reshape(X.shape[0], 1, X.shape[1])
     elif X.ndim != 3:
         raise ValueError(f"Unsupported X.ndim = {X.ndim}")
     return X.astype(np.float32)
 
 def prepare_y(y):
+    """Ensure y is 1D int64 array (targets already integers)."""
     y = to_numpy_if_df(y).squeeze()
     if y.ndim != 1:
         y = y.reshape(-1)
-    if not np.issubdtype(y.dtype, np.integer):
-        uniq, inv = np.unique(y, return_inverse=True)
-        mapping = {i: v for i, v in enumerate(uniq)}
-        return inv.astype(np.int64), mapping
-    else:
-        uniques = np.unique(y)
-        if (uniques == np.arange(len(uniques))).all():
-            return y.astype(np.int64), None
-        val_to_idx = {v: i for i, v in enumerate(uniques)}
-        mapped = np.vectorize(val_to_idx.get)(y).astype(np.int64)
-        mapping = {i: v for i, v in enumerate(uniques)}
-        return mapped, mapping
+    return y.astype(np.int64), None   # no mapping needed
 
 # --- load ---
 print("Loading files (will raise if a path is incorrect):")
@@ -50,28 +40,6 @@ df_v1 = load_csv(files["v1"])
 df_v2 = load_csv(files["v2"])
 df_v3 = load_csv(files["v3"])
 df_test_v3 = load_csv(files["v3_test"])
-
-# Quick info
-print("\n--- V1 info ---")
-print("Pandas df shape:", df_v1.shape)
-print("Columns:", df_v1.columns.tolist()[:20])
-print(df_v1.dtypes.value_counts().to_dict())
-
-print("\n--- V2 info ---")
-print("Pandas df shape:", df_v2.shape)
-print("Columns:", df_v2.columns.tolist()[:20])
-print(df_v2.dtypes.value_counts().to_dict())
-
-print("\n--- V3 info ---")
-print("Pandas df shape:", df_v3.shape)
-print("Columns:", df_v3.columns.tolist()[:20])
-print(df_v3.dtypes.value_counts().to_dict())
-
-
-print("\n--- Test data info ---")
-print("Pandas df shape:", df_test_v3.shape)
-print("Columns:", df_test_v3.columns.tolist()[:20])
-print(df_test_v3.dtypes.value_counts().to_dict())
 
 # --- convert to numpy arrays ---
 X1_raw = df_v1.drop(["damage_class", "structural_condition", "date", "time"], axis=1, errors='ignore')
@@ -92,18 +60,16 @@ X2 = prepare_X_as_3d(X2_raw)
 X3_train = prepare_X_as_3d(X3_train_raw)
 X3_test = prepare_X_as_3d(X3_test_raw)
 
-y1, map1 = prepare_y(y1_raw) if y1_raw is not None else (None, None)
-y2, map2 = prepare_y(y2_raw) if y2_raw is not None else (None, None)
-y3_test, map3_test = prepare_y(y3_test_raw) if y3_test_raw is not None else (None, None)
-y3_train, map3 = prepare_y(y3_train_raw)
-
+y1, _ = prepare_y(y1_raw) if y1_raw is not None else (None, None)
+y2, _ = prepare_y(y2_raw) if y2_raw is not None else (None, None)
+y3_test, _ = prepare_y(y3_test_raw) if y3_test_raw is not None else (None, None)
+y3_train, _ = prepare_y(y3_train_raw)
 
 # Save arrays
 np.savez_compressed("Data/Processed/Training_Prepared_Data/V1_dataset.npz", X=X1 , y=y1)
 np.savez_compressed("Data/Processed/Training_Prepared_Data/V2_dataset.npz", X=X2 , y=y2)
 np.savez_compressed("Data/Processed/Training_Prepared_Data/V3_resampled_dataset.npz", X=X3_train , y=y3_train)
 np.savez_compressed("Data/Processed/Testing_Prepared_Data/V3_test_resampled.npz", X=X3_test , y=y3_test)
-
 
 # --- After prepare ---
 print("\n--- After prepare ---")
@@ -117,16 +83,7 @@ print("y2:", None if y2 is None else (y2.shape, y2.dtype, "unique_classes:", np.
 print("y3_test:", None if y3_test is None else (y3_test.shape, y3_test.dtype, "unique_classes:", np.unique(y3_test).tolist()))
 print("y3_train:", (y3_train.shape, y3_train.dtype, "unique_classes:", np.unique(y3_train).tolist()))
 
-if map1:
-    print("y1 mapping (index -> original):", map1)
-if map2:
-    print("y2 mapping (index -> original):", map2)
-if map3_test:
-    print("y3_test mapping (index -> original):", map3_test)
-if map3:
-    print("y3_train mapping (index -> original):", map3)
-
-# quick sanity checks
+# sanity checks
 for name, X in [("X1", X1), ("X2", X2), ("X3_train", X3_train)]:
     if X.ndim != 3:
         raise AssertionError(f"{name} is not 3D after prepare: ndim={X.ndim}")

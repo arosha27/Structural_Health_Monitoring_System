@@ -1,4 +1,4 @@
-# test_dataloader_and_model.py
+
 import matplotlib.pyplot as plt
 import seaborn as sns
 import torch
@@ -8,8 +8,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score , precision_score , recall_score , f1_score
 from torch.utils.data import DataLoader, TensorDataset
 
-# Import the model (assuming Models/models.py has HybridModel class)
-# at the top of your file
+
 import sys
 import os
 
@@ -19,8 +18,8 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.abspath(os.path.join(current_dir, ".."))
 sys.path.append(project_root)
 
-# E:\ITSolera\HMS\Structural_Health_Monitoring_System\Models\models.py
-from Models.models import HybridModel  # adjust path if needed
+
+from Models.models import HybridModel
 
 # ==== Choose dataset for test ====
 
@@ -183,14 +182,13 @@ def train_with_early_stopping(model, train_loader, val_loader , device , epochs 
 
 
 
-# model = HybridModel(input_channels=1, cnn_channels=32, lstm_hidden=64, lstm_layers=1, num_classes=4).to(device)
+
 train_with_early_stopping(model, train_loader, val_loader, device, epochs=50, patience=7)
 
-#saving the model with V1 Dataset Version
+#saving the model with V2 Dataset Version
 
-#uncomment the one you trained the model .
-torch.save(model.state_dict() , "Models/Trained_models/V2_Best_model.pth") # Acc: 0.9776
-# torch.save(model.state_dict() , "Models/Trained_models/V2_model.pth") #Acc: 0.9291
+torch.save(model.state_dict() , "Models/Trained_models/V2_Best_model.pth") 
+
 
 
 

@@ -43,14 +43,6 @@ model = HybridModel(
     num_classes=4
 )
 
-# model = HybridModel(
-#     input_channels=19,
-#     cnn_channels=64,
-#     lstm_hidden=128,
-#     lstm_layers=3,
-#     num_classes=4
-# )# pass the best parameters from optuna used in train
-
 
 # Load the saved state_dict
 model.load_state_dict(torch.load("Models/Trained_models/V2_Best_model.pth"))
